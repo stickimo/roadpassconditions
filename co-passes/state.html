@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>State Passes | RoadPassConditions.com</title>
+    <meta name="description" content="State mountain pass conditions with live National Weather Service data." />
+    <meta property="og:title" content="State Passes | RoadPassConditions.com" />
+    <meta property="og:description" content="State mountain pass conditions with live National Weather Service data." />
+    <meta property="og:url" content="https://roadpassconditions.com/state.html" />
+    <meta property="og:image" content="https://roadpassconditions.com/favicon.ico" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="State Passes | RoadPassConditions.com" />
+    <meta name="twitter:description" content="State mountain pass conditions with live National Weather Service data." />
+    <meta name="twitter:image" content="https://roadpassconditions.com/favicon.ico" />
+    <link rel="canonical" href="" />
+    <link rel="stylesheet" href="assets/styles.css" />
+    <link rel="icon" href="favicon.ico" />
+  </head>
+  <body>
+    <header class="site-header">
+      <h1>RoadPassConditions</h1>
+      <p>Fast mountain pass snapshot built for travelers and dispatchers.</p>
+    </header>
+    <main>
+      <p><a href="index.html">&larr; Back to home</a></p>
+      <h1 id="state-title">State Passes</h1>
+      <div class="state-head">
+        <section class="hero">
+          <p>Updated from official weather sources. Road status info may be delayed.</p>
+        </section>
+        <div class="pass-controls-wrap">
+          <div class="pass-controls">
+            <div>
+              <label for="pass-search">Find a pass</label>
+              <input id="pass-search" type="search" placeholder="Search passes..." />
+            </div>
+            <div>
+              <label for="pass-jump">Jump to a pass</label>
+              <select id="pass-jump">
+                <option value="">Select a pass...</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <section>
+        <h2>Passes</h2>
+        <ul class="pass-list" id="pass-list"></ul>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> RoadPassConditions.com. Built with live National Weather Service data.</p>
+      <p><a href="about.html">About</a> • <a href="privacy.html">Privacy</a> • <a href="contact.html">Contact</a></p>
+    </footer>
+    <script type="module">
+      import { onReady, formatElevation } from './assets/app.js';
+      import { getPassesByState, getStateLabel } from './assets/passes.js';
+
+      function getStateFromQuery() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('state');
+      }
+
+      onReady(() => {
+        document.getElementById('year').textContent = new Date().getFullYear();
+        const state = getStateFromQuery();
+        const stateLabel = getStateLabel(state);
+        const titleText = stateLabel ? `${stateLabel} Passes` : 'State Passes';
+        const titleNode = document.getElementById('state-title');
+        const titleSuffix = 'Road & Weather Conditions | RoadPassConditions.com';
+        const metaDescription = document.querySelector('meta[name="description"]');
+        const ogTitle = document.querySelector('meta[property="og:title"]');
+        const ogDescription = document.querySelector('meta[property="og:description"]');
+        const ogUrl = document.querySelector('meta[property="og:url"]');
+        const canonicalLink = document.querySelector('link[rel="canonical"]');
+        const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+        const twitterDescription = document.querySelector('meta[name="twitter:description"]');
+        const pageTitle = `${titleText} | ${titleSuffix}`;
+        const descriptionText = stateLabel
+          ? `${stateLabel} mountain pass conditions with live National Weather Service data.`
+          : 'State mountain pass conditions with live National Weather Service data.';
+        const pageUrl = state
+          ? `${window.location.origin}/state.html?state=${encodeURIComponent(state)}`
+          : `${window.location.origin}/state.html`;
+        titleNode.textContent = titleText;
+        document.title = pageTitle;
+        if (metaDescription) {
+          metaDescription.content = descriptionText;
+        }
+        if (ogTitle) ogTitle.content = pageTitle;
+        if (ogDescription) ogDescription.content = descriptionText;
+        if (ogUrl) ogUrl.content = pageUrl;
+        if (canonicalLink) canonicalLink.href = pageUrl;
+        if (twitterTitle) twitterTitle.content = pageTitle;
+        if (twitterDescription) twitterDescription.content = descriptionText;
+
+        const list = document.getElementById('pass-list');
+        const searchInput = document.getElementById('pass-search');
+        const jumpSelect = document.getElementById('pass-jump');
+        const passes = getPassesByState(state);
+        const passItems = [];
+        list.innerHTML = '';
+        passes.forEach((pass) => {
+          const item = document.createElement('li');
+          item.className = 'pass-card';
+          item.dataset.search = `${pass.name} ${pass.route_label}`.toLowerCase();
+          item.innerHTML = `
+            <h3>${pass.name}</h3>
+            <p>${pass.route_label} • ${formatElevation(pass.elevation_ft)}</p>
+            <a href="pass.html?pass=${pass.id}">View conditions</a>
+          `;
+          list.appendChild(item);
+          passItems.push(item);
+        });
+
+        if (jumpSelect) {
+          const sortedPasses = [...passes].sort((a, b) => a.name.localeCompare(b.name));
+          sortedPasses.forEach((pass) => {
+            const option = document.createElement('option');
+            option.value = pass.id;
+            option.textContent = pass.name;
+            jumpSelect.appendChild(option);
+          });
+          jumpSelect.addEventListener('change', () => {
+            const passId = jumpSelect.value;
+            if (passId) {
+              window.location.href = `pass.html?pass=${encodeURIComponent(passId)}`;
+            }
+          });
+        }
+
+        if (searchInput) {
+          searchInput.addEventListener('input', () => {
+            const query = searchInput.value.trim().toLowerCase();
+            passItems.forEach((item) => {
+              const matches = !query || (item.dataset.search || '').includes(query);
+              item.style.display = matches ? '' : 'none';
+            });
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Privacy | CO Pass Conditions</title>
+    <meta property="og:title" content="Privacy | CO Pass Conditions" />
+    <meta property="og:description" content="Privacy policy for RoadPassConditions.com." />
+    <meta property="og:url" content="https://roadpassconditions.com/privacy.html" />
+    <meta property="og:image" content="https://roadpassconditions.com/favicon.ico" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Privacy | CO Pass Conditions" />
+    <meta name="twitter:description" content="Privacy policy for RoadPassConditions.com." />
+    <meta name="twitter:image" content="https://roadpassconditions.com/favicon.ico" />
+    <link rel="stylesheet" href="assets/styles.css" />
+    <link rel="icon" href="favicon.ico" />
+    <script>
+      (function() {
+        var saved = localStorage.getItem('rpc-theme');
+        var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="site-header-content">
+        <h1>Privacy Notice</h1>
+      </div>
+      <button class="theme-toggle" type="button" aria-label="Toggle theme">
+        <span class="theme-toggle-icon">🌙</span>
+        <span class="theme-toggle-label">Dark</span>
+      </button>
+    </header>
+    <main>
+      <section class="info-card">
+        <h2>Simple policy</h2>
+        <p>
+          This static site does not store personal data. No analytics, no tracking pixels, no cookies. Web servers that host it
+          may log basic request details (IP address, user agent) for security—follow your host's policies.
+        </p>
+      </section>
+      <section class="info-card">
+        <h2>Third-party services</h2>
+        <ul>
+          <li>National Weather Service APIs provide weather data directly to the browser.</li>
+          <li>No other third-party scripts load in this site.</li>
+        </ul>
+      </section>
+      <section class="info-card">
+        <h2>Contact</h2>
+        <p>Please email <a href="mailto:fischercaleb5@gmail.com">fischercaleb5@gmail.com</a> with any questions.</p>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <p>RoadPassConditions.com</p>
+      <p><a href="index.html" style="color: #fff">Return home</a></p>
+    </footer>
+    <script type="module">
+      import { initTheme, setupThemeToggle, onReady } from './assets/app.js';
+      initTheme();
+      onReady(() => setupThemeToggle());
+    </script>
+  </body>
+</html>
